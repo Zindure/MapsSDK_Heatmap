@@ -18,5 +18,10 @@
         android:id="@+id/mapsActivity"
         android:name="com.example.mapssdk_heatmap.MapsActivity"
         android:label="activity_maps"
-        tools:layout="@layout/activity_maps" />
+        tools:layout="@layout/origin_maps"
+        />
+    <argument
+        android:name="breed"
+        app:argType="string"
+        android:defaultValue="Golden Retriever" />
 </navigation>

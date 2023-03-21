@@ -36,6 +36,11 @@
             android:exported="true"
             android:label="@string/title_activity_maps" >
         </activity>
+        <activity
+            android:name=".MapsHeatActivity"
+            android:exported="true"
+            android:label="MapsHeatActivity" >
+        </activity>
     </application>
 
 </manifest>

@@ -21,18 +21,16 @@ import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsHeatActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mMap: GoogleMap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.origin_maps)
+        setContentView(R.layout.heat_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment?
+            .findFragmentById(R.id.heat) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -60,13 +58,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val defaultFocus = LatLng(40.416775, -3.70379)
         mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultFocus, 3f))
 
-        // List of JSON objects
-        val displayedCountries = ArrayList<String>()
         // Loop through the countries and create associated layers
         val breed = intent.getStringExtra("breed") ?: "Golden Retriever"
-        val country = getBreedOrigins(breed)
-        val jsonString = country[0]
-        displayedCountries.add(country[1])
+        val popularCountries = getBreedPopularity(breed)
+        val jsonString = popularCountries
         Log.d("GeoJSON : ", jsonString)
         val jsonObject = JSONObject(jsonString)
         val tmpLayer = GeoJsonLayer(mMap, jsonObject)
@@ -78,63 +73,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         tmpLayer.addLayerToMap()
 
 
-        //List of markers
-        val markerList = mutableListOf<Marker>()
-
-        //Listens for map Click Events
-       /* mMap!!.setOnMapClickListener{
-
-            //Here, clears the map
-            mMap!!.clear()
-
-            //Here, get country from click location
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val addresses: List<Address> = geocoder.getFromLocation(it.latitude, it.longitude, 1) as List<Address>
-            var country: String = ""
-            if (addresses.isNotEmpty() && addresses[0].countryCode != null) {
-                country = addresses[0].countryCode
-            }
-
-            // Marker Information String
-            val displayedInformation : String = ""
-
-            //Here, check if country is part of displayed countries
-            if(displayedCountries.contains(country)){
-
-                val clickedCountryLatLng = LatLng(it.latitude, it.longitude)
-                val informationWindow = mMap?.addMarker(
-                    MarkerOptions()
-                        .position(clickedCountryLatLng)
-                        .title(country.toString())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_icon))
-                        .snippet(countries[displayedCountries.indexOf(country)][2])//Will contain breed repartition in
-                )
-                informationWindow?.alpha = 0.0f;
-                informationWindow?.setInfoWindowAnchor(.5f, 1.0f);
-
-                //Removes layer that has the same index as the country name from map and adds it again
-                layerArray[displayedCountries.indexOf(country)].removeLayerFromMap()
-                layerArray[displayedCountries.indexOf(country)].addLayerToMap()
-
-                if (informationWindow != null) {
-                    markerList.add(informationWindow)
-                }
-                informationWindow?.showInfoWindow()
-            }
-
-        }*/
-
     }
 
 
-    private fun getBreedOrigins(breed: String): ArrayList<String> {
+    private fun getBreedPopularity(breed: String): String {
 
 
         //Reads from CSV File that contains country geoJSONS and names
-        val file = applicationContext.assets.open("origin_data.csv")
+        val file = applicationContext.assets.open("heat_data.csv")
             .bufferedReader()
             .use { it.readText()}
-        var originCountry = ArrayList<String>()
+        var popularity = ""
         val rows: List<List<String>> = csvReader().readAll(file)
         for (row in rows){
             /*The first column contains the GeoJSON and the second the country name, both of
@@ -142,12 +91,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             All further rows, can be used to store additional data on the given country
             */
             if (row[1] == breed){
-                originCountry.add(row[4])
-                originCountry.add(row[3])
-                originCountry.add(row[0])
+                println(row[0])
+                println(row[1])
+                println(row[2])
+                popularity = row[2]
             }
         }
-        return originCountry
+        return popularity
 
 
 

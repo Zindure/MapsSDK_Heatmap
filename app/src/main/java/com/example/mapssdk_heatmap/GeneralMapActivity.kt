@@ -1,9 +1,11 @@
 package com.example.mapssdk_heatmap
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -22,19 +24,15 @@ class GeneralMapActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_general_map)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        binding.buttonFirst.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            intent.putExtra("breed", "French Bulldog")
+            startActivity(intent)
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-    val navController = findNavController(R.id.nav_host_fragment_content_general_map)
-    return navController.navigateUp(appBarConfiguration)
-            || super.onSupportNavigateUp()
+        binding.buttonFirst2.setOnClickListener {
+            val intent = Intent(this, MapsHeatActivity::class.java)
+            intent.putExtra("breed", "French Bulldog")
+            startActivity(intent)
+        }
     }
 }
